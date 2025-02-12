@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>프리셋 사진 관리</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin: 0;
+            padding: 0;
+            background-color: #111;
+            color: white;
+        }
+        .header {
+            background-color: black;
+            padding: 10px;
+            font-size: 18px;
+        }
+        .banner {
+            position: relative;
+            width: 100%;
+            height: 800px;
+            background: url('GOAS.jpg') no-repeat center center/cover;
+        }
+        .banner::after {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+        }
+        .banner-text {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 180px;
+            font-weight: bold;
+            color: white;
+            z-index: 1;
+        }
+        .preset-container {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-top: 20px;
+        }
+        .preset {
+            border: 2px solid #ffffff;
+            padding: 10px;
+            width: 200px;
+            cursor: pointer;
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+        .image-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+            gap: 10px;
+            margin-top: 20px;
+        }
+        .image-grid img, #randomImage img {
+            width: 78px;
+            height: 110px;
+            object-fit: cover;
+            cursor: pointer;
+            border: 1px solid #ccc;
+        }
+        #randomButton {
+            margin-top: 20px;
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+            background-color: #444;
+            color: white;
+            border: none;
+        }
+        #randomImage {
+            margin-top: 20px;
+            padding: 10px;
+            border: 2px solid #ffffff;
+            display: inline-block;
+            min-width: 80px;
+            min-height: 110px;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">신한 110-547-622421 후원 감사합니다.</div>
+    <div class="banner">
+        <div class="banner-text">고아스톤</div>
+    </div>
+    
+    <div class="preset-container">
+        <div class="preset" onclick="selectPreset(1)">덱 1</div>
+        <div class="preset" onclick="selectPreset(2)">덱 2</div>
+        <div class="preset" onclick="selectPreset(3)">덱 3</div>
+    </div>
+
+    <h2 id="selectedPreset">덱 선택</h2>
+    <input type="file" id="imageInput" accept="image/*" multiple>
+    <button onclick="addImages()">카드 추가</button>
+    <button id="randomButton" onclick="pickRandomImage()" disabled>카드 뽑기</button>
+    
+    <div class="image-grid" id="imageGrid"></div>
+    
+    <h2>뽑은 카드</h2>
+    <div id="randomImage"></div>
+
+    <script>
+        let sessionRemovedImages = new Set();
+        let currentPreset = null;
+        let db;
+        const request = indexedDB.open("PresetDB", 1);
+
+        request.onupgradeneeded = function (event) {
+            db = event.target.result;
+            if (!db.objectStoreNames.contains("presets")) {
+                db.createObjectStore("presets", { keyPath: "presetId" });
+            }
+        };
+
+        request.onsuccess = function (event) {
+            db = event.target.result;
+            console.log("IndexedDB 연결 성공");
+        };
+
+        request.onerror = function () {
+            console.error("IndexedDB 연결 실패");
+        };
+        
+        function adjustLayout() {
+            if (window.innerWidth <= 600) {
+                document.querySelector(".banner-text").style.fontSize = "30px";
+                document.querySelectorAll(".preset").forEach(el => {
+                    el.style.width = "90%";
+                });
+            }
+        }
+        window.addEventListener("resize", adjustLayout);
+        window.addEventListener("load", adjustLayout);
+
+        function selectPreset(presetNumber) {
+            currentPreset = presetNumber;
+            document.getElementById("selectedPreset").innerText = `덱 ${presetNumber} 선택됨`;
+            document.getElementById("randomButton").disabled = false;
+            loadPresetImages();
+        }
+
+        function loadPresetImages() {
+            const transaction = db.transaction(["presets"], "readonly");
+            const store = transaction.objectStore("presets");
+            store.get(currentPreset).onsuccess = function (event) {
+                let presetData = event.target.result;
+                if (presetData) {
+                    updateGrid(presetData.images);
+                }
+            };
+        }
+
+        function updateGrid(images = []) {
+            let grid = document.getElementById("imageGrid");
+            grid.innerHTML = "";
+            images.forEach((src, index) => {
+                let img = document.createElement("img");
+                img.src = src;
+                img.onclick = function () { removeImage(index); };
+                grid.appendChild(img);
+            });
+        }
+
+        function removeImage(index) {
+            const transaction = db.transaction(["presets"], "readwrite");
+            const store = transaction.objectStore("presets");
+            store.get(currentPreset).onsuccess = function (event) {
+                let presetData = event.target.result;
+                if (!presetData) return;
+
+                presetData.images.splice(index, 1);
+                store.put(presetData);
+                updateGrid(presetData.images);
+            };
+        }
+
+        function pickRandomImage() {
+            if (!currentPreset) {
+                alert("프리셋을 먼저 선택하세요.");
+                return;
+            }
+            const transaction = db.transaction(["presets"], "readonly");
+            const store = transaction.objectStore("presets");
+            store.get(currentPreset).onsuccess = function (event) {
+                let presetData = event.target.result;
+                if (!presetData || presetData.images.length === 0) {
+                    alert("뽑을 카드가 없습니다.");
+                    return;
+                }
+                let availableImages = presetData.images.filter((_, idx) => !sessionRemovedImages.has(idx));
+                if (availableImages.length === 0) {
+                    alert("뽑을 카드가 없습니다.");
+                    return;
+                }
+                let randomIndex = Math.floor(Math.random() * availableImages.length);
+                let selectedImage = availableImages[randomIndex];
+                sessionRemovedImages.add(randomIndex);
+                let randomImageBox = document.getElementById("randomImage");
+                randomImageBox.innerHTML = '';
+                let img = document.createElement("img");
+                img.src = selectedImage;
+                randomImageBox.appendChild(img);
+            };
+        }
+    </script>
+</body>
+</html>
