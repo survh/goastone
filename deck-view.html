@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>덱 보기</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <header>
+
+        <div class="header-left">
+            <a href="index.html" class="icon"></a>
+            <div class="logo">GOASTONE</div>
+        </div>
+        <nav>
+            <ul class="header-nav">
+                <li><a href="deck.html">덱 만들기</a></li>
+                <li><a href="deck-view.html" id="deck-view">덱 보기</a></li>
+                <li><a href="play.html" id="play">플레이</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main>
+        <div class="container">
+            <div class="deck-list">
+                <h2>저장된 덱</h2>
+                <button id="shareDeck" class="styled-button">덱 공유</button>
+                <button id="importDeck" class="styled-button">덱 가져오기</button>
+                <div id="importDeckPopup" class="popup">
+                    <div class="popup-content">
+                        <h3>덱 가져오기</h3>
+                        <input type="text" id="importDeckInput" placeholder="덱 코드를 입력하세요">
+                        <button id="loadImportedDeck" class="styled-button">불러오기</button>
+                        <button id="closeImportDeckPopup" class="styled-button cancel-button">닫기</button>
+                    </div>
+                </div>
+                <ul id="deckList"></ul>
+            </div>
+
+            <div class="deck-details" id="deckDetails">
+                <h2 id="deckTitle">덱 정보</h2>
+                <div id="cardContainer"></div>
+            </div>
+        </div>
+    </main>
+
+    <script src="deck-view.js"></script>
+</body>
+</html>
