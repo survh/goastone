@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>고아스톤</title>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            font-family: Arial, sans-serif;
+            background-color: #EEE;
+        }
+        
+        header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 10px 20px;
+            background: #333;
+            color: white;
+        }
+
+        .container {
+            display: flex;
+            flex: 1;
+        }
+
+        .left-section {
+            width: 60%;
+            padding: 20px;
+            box-sizing: border-box;
+            border-right: 2px solid #ccc;
+            overflow-y: auto;
+        }
+
+        .right-section {
+            width: 40%;
+            padding: 20px;
+            box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            background: #ffffff;
+            box-shadow: -2px 0 10px rgba(0, 0, 0, 0.1);
+            border-radius: 10px 0 0 10px;
+            animation: fadeIn 0.5s ease-in-out;
+        }
+
+        .upload-section, .card-form, .deck-name-input {
+            margin-bottom: 20px;
+            width: 80%;
+            padding: 15px;
+            background: #fff;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease-in-out;
+        }
+
+        .upload-section:hover, .card-form:hover, .deck-name-input:hover {
+            transform: scale(1.05);
+        }
+
+        .drop-zone {
+            border: 2px dashed #007bff;
+            padding: 20px;
+            text-align: center;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .drop-zone:hover {
+            background-color: #e3f2fd;
+        }
+
+        .preview img {
+            max-width: 120px;
+            max-height: 180px;
+            object-fit: cover;
+            margin-bottom: 10px;
+            border-radius: 8px;
+            transition: transform 0.3s ease-in-out;
+        }
+
+        .preview img:hover {
+            transform: scale(1.1);
+        }
+
+        button {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        button:hover {
+            background: #0056b3;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateX(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="header-left">
+            <a href="index.html" class="icon"></a>
+            <div class="logo">GOASTONE</div>
+        </div>
+        <nav>
+            <ul class="header-nav">
+                <li><a href="deck.html">덱 만들기</a></li>
+                <li><a href="deck-view.html" id="deck-view">덱 보기</a></li>
+                <li><a href="play.html" id="play">플레이</a></li>
+            </ul>
+        </nav>
+    </header>
+    <div class="container">
+        <div class="left-section" id="deckPreview">
+            <!-- 생성된 카드 정보가 여기에 표시됨 -->
+        </div>
+        
+        <div class="right-section">
+            <div class="upload-section">
+                <input type="file" id="imageUpload" multiple>
+                <div class="drop-zone" id="dropZone">
+                    <p>여기로 이미지를 드래그하거나 클릭하여 업로드</p>
+                </div>
+            </div>
+            <div class="preview" id="imagePreviewContainer">
+                <img id="imagePreview" src="" alt="미리 보기" style="display: none;">
+            </div>
+            <div class="card-form">
+                <input type="text" id="cardName" placeholder="이름 입력">
+                <input type="text" id="cardKeyword" placeholder="키워드 입력">
+                <input type="text" id="cardType" placeholder="종족 입력">
+                <button id="createCard">카드 추가</button>
+            </div>
+            <div class="deck-name-input" id="deckNameContainer">
+                <input type="text" id="deckName" placeholder="덱 이름 입력">
+            </div>
+            <button id="saveDeck">저장</button>
+        </div>
+    </div>
+    
+    <div id="savePopup" class="popup">
+        <div class="popup-content">
+            <h2>성공적으로 저장이 완료되었습니다.</h2>
+            <button id="closePopup">확인</button>
+        </div>
+    </div>
+
+    <script src="deck-create.js" defer></script>
+</body>
+</html>

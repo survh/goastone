@@ -1,0 +1,114 @@
+/* deck-create.css */
+
+/* 기본 스타일 */
+body {
+    margin: 0;
+    padding: 0;
+    font-family: Arial, sans-serif;
+    background-color: #1c1c3c;
+    color: white;
+}
+
+/* 헤더 스타일 */
+header {
+    background-color: #2e1e12;
+    padding: 15px 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.5);
+}
+
+/* 중앙 정렬 */
+.center {
+    text-align: center;
+    margin-top: 20px;
+}
+
+/* 덱 빌더 전체 컨테이너 */
+.deck-builder {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+    width: 80%;
+    margin: 0 auto;
+}
+
+/* 업로드 영역 */
+.upload-section {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+}
+
+/* 드래그 앤 드롭 영역 */
+.drop-zone {
+    width: 400px;
+    height: 150px;
+    border: 2px dashed rgba(255, 255, 255, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.drop-zone:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+/* 카드 정보 입력 폼 */
+.card-form {
+    display: flex;
+    gap: 10px;
+}
+
+.card-form input {
+    padding: 10px;
+    font-size: 16px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+.card-form button {
+    padding: 10px 15px;
+    font-size: 16px;
+    background-color: navy;
+    color: white;
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.card-form button:hover {
+    background-color: #eee;
+}
+
+/* 덱 미리보기 */
+.deck-preview {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+    margin-top: 20px;
+}
+
+.card {
+    width: 78px;
+    height: 110px;
+    background-color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    font-weight: bold;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: transform 0.2s ease;
+}
+
+.card:hover {
+    transform: scale(1.1);
+}
